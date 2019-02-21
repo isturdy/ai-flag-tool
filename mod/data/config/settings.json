@@ -1,0 +1,5 @@
+{
+  "plugins":{
+    "AiFlagToolCombatPlugin":"com.github.isturdy.aiflagtool.AiFlagToolCombatPlugin",
+  },
+}

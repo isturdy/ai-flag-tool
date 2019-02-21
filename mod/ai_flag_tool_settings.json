@@ -1,0 +1,6 @@
+{
+
+  # The log level to use within the mod. "INFO" is recommended unless debugging (use "DEBUG") or "INFO" is spamming logs
+  # excessively. (Please report warnings or errors at github.com/isturdy/ai-flag-tool or the mod's forum thread).
+  "log_level": "DEBUG"
+}
