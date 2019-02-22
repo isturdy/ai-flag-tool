@@ -37,8 +37,9 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
         engine ?: return
 
         val ship = engine.playerShip
-        val flags = ship.aiFlags
+        if (ship.ai == null) return
 
+        val flags = ship.aiFlags
         val setFlags = FLAGS.filter { flag -> flags.hasFlag(flag) }
 
         val newFlags = setFlags - lastFlags
@@ -63,25 +64,39 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
         }
         val flagString = flagsWithoutData.joinToString(", ")
         LOGGER.debug("Other set flags: $flagString")
-        engine.maintainStatusForPlayerShip(
-            STATUS_KEY,
-            "",
-            "Other Flags",
-            flagString,
-            false
-        )
+        if (flagsWithoutData.isNotEmpty()) {
+            engine.maintainStatusForPlayerShip(
+                STATUS_KEY,
+                "",
+                "Other Flags",
+                flagString,
+                false
+            )
+        }
+
         val maneuverTarget = flags.getCustom(ShipwideAIFlags.AIFlags.MANEUVER_TARGET)
         if (maneuverTarget != null && maneuverTarget is CombatEntityAPI) {
             MagicRender.singleframe(
                 Global.getSettings().getSprite("graphics/warroom/waypoint.png"),
                 maneuverTarget.location,
+                Vector2f(64.0f, 64.0f),
+                0.0f,
+                Color.RED,
+                false
+            )
+        } else if (maneuverTarget != null) {
+            LOGGER.debug("MANEUVER_TARGET not a CombatEntityAPI: $maneuverTarget")
+        }
+
+        if (ship.mouseTarget != null) {
+            MagicRender.singleframe(
+                Global.getSettings().getSprite("graphics/warroom/waypoint.png"),
+                ship.mouseTarget,
                 Vector2f(32.0f, 32.0f),
                 0.0f,
                 Color.GREEN,
                 false
             )
-        } else if (maneuverTarget != null) {
-            LOGGER.debug("MANEUVER_TARGET not a CombatEntityAPI: $maneuverTarget")
         }
     }
 }
