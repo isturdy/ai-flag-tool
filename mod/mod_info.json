@@ -3,7 +3,7 @@
     "name": "AI Flag Tool",
     "author": "Blothorn",
     "utility": "true",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Shows information about active AI flags in the combat screen.",
     "gameVersion": "0.9a",
     "jars":["ai-flag-tool.jar"],
