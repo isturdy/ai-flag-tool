@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global
 import org.json.JSONObject
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
+import java.lang.RuntimeException
 
 class AiFlagTool : BaseModPlugin() {
     companion object {
@@ -14,6 +15,11 @@ class AiFlagTool : BaseModPlugin() {
     }
 
     override fun onApplicationLoad() {
+        if (!Global.getSettings().modManager.isModEnabled("MagicLib")) {
+            throw RuntimeException(
+                "AI Flag Tool requires MagicLib! Get it at http://fractalsoftworks.com/forum/index.php?topic=13718"
+            )
+        }
         SETTINGS = Settings(Global.getSettings().loadJSON(SETTINGS_FILE))
         LOGGER.info("AI Flag Tool settings: $SETTINGS")
         setLogLevel(SETTINGS.LOG_LEVEL)
