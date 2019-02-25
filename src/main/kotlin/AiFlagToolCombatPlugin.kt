@@ -2,22 +2,24 @@ package com.github.isturdy.aiflagtool
 
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
-import com.fs.starfarer.api.combat.CombatEngineAPI
-import com.fs.starfarer.api.combat.CombatEntityAPI
-import com.fs.starfarer.api.combat.ShipwideAIFlags
+import com.fs.starfarer.api.combat.*
 import com.fs.starfarer.api.input.InputEventAPI
 import data.scripts.util.MagicRender
 import org.apache.log4j.Logger
+import org.lwjgl.input.Keyboard
 import org.lwjgl.util.vector.Vector2f
 import java.awt.Color
 
 class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
     private var engine: CombatEngineAPI? = null
     private var lastFlags: List<ShipwideAIFlags.AIFlags> = listOf()
+    private var focusShip: ShipAPI? = null
+    private var enabled = true
 
     companion object {
         val LOGGER: Logger = Global.getLogger(AiFlagToolCombatPlugin::class.java)
+
+        const val SELECT_KEYCODE = Keyboard.KEY_F
 
         // Maneuver target is handled specially
         val FLAGS = ShipwideAIFlags.AIFlags.values().filter { flag -> flag != ShipwideAIFlags.AIFlags.MANEUVER_TARGET }
@@ -36,8 +38,22 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
         val engine = this.engine
         engine ?: return
 
-        val ship = engine.playerShip
-        if (ship.ai == null) return
+        if (events != null) {
+            for (event in events) {
+                if (event.isConsumed || !event.isKeyDownEvent) continue
+                if (event.eventValue != SELECT_KEYCODE) continue
+                if (event.isCtrlDown) {
+                    focusShip = engine.playerShip.shipTarget
+                    enabled = true
+                } else if (event.isAltDown) {
+                    enabled = !enabled
+                }
+            }
+        }
+        if (!enabled) return
+
+        val ship = focusShip ?: engine.playerShip
+        if (ship == null || ship.ai == null) return
 
         val flags = ship.aiFlags
         val setFlags = FLAGS.filter { flag -> flags.hasFlag(flag) }
