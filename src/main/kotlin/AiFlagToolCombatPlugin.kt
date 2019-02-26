@@ -90,14 +90,26 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
             )
         }
 
+        val shipTarget = ship.shipTarget
+        if (shipTarget != null && shipTarget is CombatEntityAPI) {
+            MagicRender.singleframe(
+                Global.getSettings().getSprite("graphics/warroom/waypoint.png"),
+                shipTarget.location,
+                Vector2f(64.0f, 64.0f),
+                0.0f,
+                Color.RED,
+                false
+            )
+        }
+
         val maneuverTarget = flags.getCustom(ShipwideAIFlags.AIFlags.MANEUVER_TARGET)
         if (maneuverTarget != null && maneuverTarget is CombatEntityAPI) {
             MagicRender.singleframe(
                 Global.getSettings().getSprite("graphics/warroom/waypoint.png"),
                 maneuverTarget.location,
-                Vector2f(64.0f, 64.0f),
+                Vector2f(32.0f, 32.0f),
                 0.0f,
-                Color.RED,
+                Color.BLUE,
                 false
             )
         } else if (maneuverTarget != null) {
@@ -108,7 +120,7 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
             MagicRender.singleframe(
                 Global.getSettings().getSprite("graphics/warroom/waypoint.png"),
                 ship.mouseTarget,
-                Vector2f(32.0f, 32.0f),
+                Vector2f(16.0f, 16.0f),
                 0.0f,
                 Color.GREEN,
                 false
