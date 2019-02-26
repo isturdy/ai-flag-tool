@@ -79,7 +79,6 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
             engine.maintainStatusForPlayerShip(key, "", "AI Flag", "$flag: ${flags.getCustom(flag)}", false)
         }
         val flagString = flagsWithoutData.joinToString(", ")
-        LOGGER.debug("Other set flags: $flagString")
         if (flagsWithoutData.isNotEmpty()) {
             engine.maintainStatusForPlayerShip(
                 STATUS_KEY,
@@ -113,7 +112,7 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
                 false
             )
         } else if (maneuverTarget != null) {
-            LOGGER.debug("MANEUVER_TARGET not a CombatEntityAPI: $maneuverTarget")
+            LOGGER.warn("MANEUVER_TARGET not a CombatEntityAPI: $maneuverTarget")
         }
 
         if (ship.mouseTarget != null) {
