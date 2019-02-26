@@ -28,5 +28,6 @@ class AiFlagTool : BaseModPlugin() {
     private fun setLogLevel(level: Level) {
         AiFlagTool.LOGGER.level = level
         AiFlagToolCombatPlugin.LOGGER.level = level
+        RetroactiveLogger.LOGGER.level = level
     }
 }

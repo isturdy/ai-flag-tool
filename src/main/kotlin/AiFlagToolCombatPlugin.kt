@@ -12,6 +12,7 @@ import java.awt.Color
 
 class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
     private var engine: CombatEngineAPI? = null
+    private var retroactiveLogger = RetroactiveLogger()
     private var lastFlags: List<ShipwideAIFlags.AIFlags> = listOf()
     private var focusShip: ShipAPI? = null
     private var enabled = true
@@ -38,12 +39,19 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
         val engine = this.engine
         engine ?: return
 
+        retroactiveLogger.advance(amount, engine.ships.filter { ship -> ship.ai != null })
+
         if (events != null) {
             for (event in events) {
                 if (event.isConsumed || !event.isKeyDownEvent) continue
                 if (event.eventValue != SELECT_KEYCODE) continue
                 if (event.isCtrlDown) {
                     focusShip = engine.playerShip.shipTarget
+                    focusShip?.let {
+                        for (message in retroactiveLogger.getMessagesFor(it)) {
+                            engine.combatUI.addMessage(1, message)
+                        }
+                    }
                     enabled = true
                 } else if (event.isAltDown) {
                     enabled = !enabled
