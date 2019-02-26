@@ -61,8 +61,8 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
         val newFlags = setFlags - lastFlags
         val droppedFlags = lastFlags - setFlags
         lastFlags = setFlags
-        if (newFlags.isNotEmpty()) LOGGER.debug("New flags: ${newFlags.joinToString(", ") }")
-        if (droppedFlags.isNotEmpty()) LOGGER.debug("Dropped flags: ${droppedFlags.joinToString(", ") }")
+        if (newFlags.isNotEmpty()) LOGGER.debug("New flags: ${newFlags.joinToString(", ")}")
+        if (droppedFlags.isNotEmpty()) LOGGER.debug("Dropped flags: ${droppedFlags.joinToString(", ")}")
 
         for (flag in droppedFlags) {
             engine.addFloatingText(ship.location, flag.toString(), 15.0f, Color.RED, ship, 0.0f, 0.0f)
