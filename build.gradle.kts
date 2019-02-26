@@ -37,6 +37,10 @@ dependencies {
     })
     implementation(fileTree("$starsectorModDirectory/LazyLib/jars") { include("*.jar") })
     implementation(fileTree("$starsectorModDirectory/MagicLib/jars") { include("*.jar") })
+
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.3.11")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.2")
 }
 
 tasks {
@@ -55,6 +59,13 @@ tasks {
         } else {
             listOf("$starsectorDirectory/Contents/MacOS/starsector_mac.sh")
         }
+    }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
     }
 }
 
