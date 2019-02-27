@@ -1,4 +1,7 @@
 {
+  # Enable display of recent flag changes when switching focus ships. This is potentially performance-intensive; consider
+  # disabling it if you are seeing performance problems in large battles.
+  "enable_retroactive_logger": true,
 
   # The log level to use within the mod. "INFO" is recommended unless debugging (use "DEBUG") or "INFO" is spamming logs
   # excessively. (Please report warnings or errors at github.com/isturdy/ai-flag-tool or the mod's forum thread).
