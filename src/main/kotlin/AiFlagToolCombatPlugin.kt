@@ -48,8 +48,8 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
                 if (event.isCtrlDown) {
                     focusShip = engine.playerShip.shipTarget
                     focusShip?.let {
-                            engine.combatUI.addMessage(1, message)
                         for (message in retroactiveLogger?.getMessagesFor(it) ?: listOf()) {
+                            engine.combatUI.addMessage(1, *message)
                         }
                     }
                     enabled = true

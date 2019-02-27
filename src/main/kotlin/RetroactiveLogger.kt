@@ -4,6 +4,18 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipwideAIFlags.AIFlags
+import java.awt.Color
+
+private val DATA_COLOR = Color.YELLOW
+private val TEXT_COLOR = Color.WHITE
+
+private fun wrapData(data: String): Array<Any> {
+    return arrayOf(DATA_COLOR, data, TEXT_COLOR)
+}
+
+private fun wrapFlags(flags: Set<AIFlags>): Array<Any> {
+    return flags.flatMap { flag -> listOf(*wrapData(flag.toString()), ", ") }.dropLast(1).toTypedArray()
+}
 
 private data class AiInfo(
     var shipTarget: CombatEntityAPI?,
@@ -16,30 +28,37 @@ private data class AiInfo(
         AiFlagToolCombatPlugin.FLAGS.filter { flag -> ship.aiFlags.hasFlag(flag) }.toSet()
     )
 
-    override fun toString(): String {
-        return "Target: $shipTarget; Maneuver target: $maneuverTarget; Flags: ${setFlags.joinToString(", ")}"
+    fun toMessage(): Array<Any> {
+        return arrayOf(
+            " Target: ", *wrapData(shipTarget.toString()),
+            "; Maneuver target: ", *wrapData(maneuverTarget.toString()),
+            "; Flags: ", *wrapFlags(setFlags)
+        )
     }
 
     // Describes the changes in this relative to 'base'.
-    fun formatDiff(base: AiInfo): String {
-        val components = mutableListOf<String>()
+    fun formatDiff(base: AiInfo): Array<Any> {
+        val components = mutableListOf<List<Any>>()
         if (base.shipTarget != shipTarget) {
-            components.add("New target: $shipTarget")
+            components.add(listOf(" New target: ", *wrapData(shipTarget.toString())))
         }
         if (base.maneuverTarget != maneuverTarget) {
-            components.add("New maneuver target: $maneuverTarget")
+            if (components.isNotEmpty()) components.add(listOf(";"))
+            components.add(listOf(" New maneuver target: ", *wrapData(maneuverTarget.toString())))
         }
         if (base.setFlags != setFlags) {
             val newFlags = setFlags - base.setFlags
             val droppedFlags = base.setFlags - setFlags
             if (newFlags.isNotEmpty()) {
-                components.add("New flags: ${newFlags.joinToString(", ")}")
+                if (components.isNotEmpty()) components.add(listOf(";"))
+                components.add(listOf(" New flags: ", *wrapFlags(newFlags)))
             }
             if (droppedFlags.isNotEmpty()) {
-                components.add("Dropped flags: ${droppedFlags.joinToString(", ")}")
+                if (components.isNotEmpty()) components.add(listOf(";"))
+                components.add(listOf(" Dropped flags: ", *wrapFlags(droppedFlags)))
             }
         }
-        return components.joinToString("; ")
+        return components.flatten().toTypedArray()
     }
 }
 
@@ -68,17 +87,15 @@ internal class RetroactiveLogger {
         }
     }
 
-    fun getMessagesFor(ship: ShipAPI): List<String> {
+    fun getMessagesFor(ship: ShipAPI): List<Array<Any>> {
         val buffer = data[ship]
         buffer ?: return listOf()
 
-        val messages = mutableListOf<String>()
+        val messages = mutableListOf<Array<Any>>()
         var last: AiInfo? = null
         for (info in buffer) {
-            LOGGER.debug(info)
-            val update = if (last == null) info.second.toString() else info.second.formatDiff(last)
-            LOGGER.debug(update)
-            messages.add("(${"%.1f".format(time - info.first)}s ago) $update")
+            val update = if (last == null) info.second.toMessage() else info.second.formatDiff(last)
+            messages.add(arrayOf("(", *wrapData("%.1f".format(time - info.first)), "s ago)", *update))
             last = info.second
         }
         return messages
