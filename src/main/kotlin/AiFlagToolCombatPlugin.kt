@@ -17,6 +17,7 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
     private var enabled = true
 
     companion object {
+        @JvmField
         val LOGGER: Logger = Global.getLogger(AiFlagToolCombatPlugin::class.java)
 
         // Maneuver target is handled specially

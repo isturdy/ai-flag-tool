@@ -43,6 +43,15 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.2")
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+}
+
+sourceSets["main"].java {
+    srcDir("src/main/java")
+}
+
 tasks {
     named<Jar>("jar")
     {

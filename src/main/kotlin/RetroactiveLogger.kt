@@ -64,6 +64,7 @@ private data class AiInfo(
 
 internal class RetroactiveLogger {
     companion object {
+        @JvmField
         val LOGGER = Global.getLogger(RetroactiveLogger::class.java)!!
         private const val HISTORY_LENGTH = 8
     }
