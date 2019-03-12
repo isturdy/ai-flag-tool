@@ -6,7 +6,6 @@ import com.fs.starfarer.api.combat.*
 import com.fs.starfarer.api.input.InputEventAPI
 import data.scripts.util.MagicRender
 import org.apache.log4j.Logger
-import org.lwjgl.input.Keyboard
 import org.lwjgl.util.vector.Vector2f
 import java.awt.Color
 
@@ -19,8 +18,6 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
 
     companion object {
         val LOGGER: Logger = Global.getLogger(AiFlagToolCombatPlugin::class.java)
-
-        const val SELECT_KEYCODE = Keyboard.KEY_F
 
         // Maneuver target is handled specially
         val FLAGS = ShipwideAIFlags.AIFlags.values().filter { flag -> flag != ShipwideAIFlags.AIFlags.MANEUVER_TARGET }
@@ -43,9 +40,9 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
 
         if (events != null) {
             for (event in events) {
-                if (event.isConsumed || !event.isKeyDownEvent) continue
-                if (event.eventValue != SELECT_KEYCODE) continue
-                if (event.isCtrlDown) {
+                if (AiFlagTool.SETTINGS.displayKey.matchesEvent(event)) {
+                    enabled = !enabled
+                } else if (AiFlagTool.SETTINGS.focusKey.matchesEvent(event)) {
                     focusShip = engine.playerShip.shipTarget
                     focusShip?.let {
                         for (message in retroactiveLogger?.getMessagesFor(it) ?: listOf()) {
@@ -53,8 +50,6 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
                         }
                     }
                     enabled = true
-                } else if (event.isAltDown) {
-                    enabled = !enabled
                 }
             }
         }

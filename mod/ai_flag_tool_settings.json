@@ -1,4 +1,14 @@
 {
+  # Keyboard shortcuts: these use emacs-style strings, control keys ('A' for alt, 'C' for control, 'S' for shift) and
+  # then a value key, all separated by hyphens. For example, "y" maps to unmodified 'y', "S-y" to capital 'Y', and
+  # "C-A-y" to control + alt + 'y'. Keys other than letters/numbers can be accessed by name, e.g. "S-tab".
+  # See legacy.lwjgl.org/javadoc/org/lwjgl/input/Keyboard.html for a full list of keys/names.
+  #
+  # Toggles all displays
+  "display_key": "A-f",
+  # Focuses the current player ship's target, or the player ship if there is no target.
+  "focus_key": "C-f",
+
   # Enable display of recent flag changes when switching focus ships. This is potentially performance-intensive; consider
   # disabling it if you are seeing performance problems in large battles.
   "enable_retroactive_logger": true,
