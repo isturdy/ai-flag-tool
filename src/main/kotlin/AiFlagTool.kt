@@ -22,7 +22,7 @@ class AiFlagTool : BaseModPlugin() {
         }
         SETTINGS = Settings(Global.getSettings().loadJSON(SETTINGS_FILE))
         LOGGER.info("AI Flag Tool settings: $SETTINGS")
-        setLogLevel(SETTINGS.LOG_LEVEL)
+        setLogLevel(SETTINGS.logLevel)
     }
 
     private fun setLogLevel(level: Level) {

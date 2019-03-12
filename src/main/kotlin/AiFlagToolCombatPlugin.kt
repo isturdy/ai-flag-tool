@@ -12,7 +12,7 @@ import java.awt.Color
 
 class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
     private var engine: CombatEngineAPI? = null
-    private var retroactiveLogger = if (AiFlagTool.SETTINGS.ENABLE_RETROACTIVE_LOGGER) RetroactiveLogger() else null
+    private var retroactiveLogger = if (AiFlagTool.SETTINGS.enableRetroactiveLogger) RetroactiveLogger() else null
     private var lastFlags: List<ShipwideAIFlags.AIFlags> = listOf()
     private var focusShip: ShipAPI? = null
     private var enabled = true
