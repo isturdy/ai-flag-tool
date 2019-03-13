@@ -19,6 +19,7 @@ val starsectorModDirectory = "$starsectorDirectory/mods"
 plugins {
     kotlin("jvm") version "1.3.11"
     java
+    jacoco
 }
 
 version = "0.2.0"
@@ -81,4 +82,12 @@ tasks.withType<Test> {
 // Compile to Java 6 bytecode so that Starsector can use it
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.6"
+}
+
+tasks.withType<JacocoReport> {
+    reports {
+        xml.isEnabled = false
+        csv.isEnabled = false
+        html.destination = file("${buildDir}/jacocoHtml")
+    }
 }
