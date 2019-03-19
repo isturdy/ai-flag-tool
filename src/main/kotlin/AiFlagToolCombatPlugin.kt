@@ -12,19 +12,21 @@ import java.awt.Color
 class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
     private var engine: CombatEngineAPI? = null
     private var retroactiveLogger = if (AiFlagTool.SETTINGS.enableRetroactiveLogger) RetroactiveLogger() else null
-    private var lastFlags: List<ShipwideAIFlags.AIFlags> = listOf()
     private var focusShip: ShipAPI? = null
+    private var lastFlags: List<ShipwideAIFlags.AIFlags> = listOf()
+    private var flagTracker: FlagTracker? = null
+
     private var enabled = true
+    private var time = 0.0f
 
     companion object {
         @JvmField
         val LOGGER: Logger = Global.getLogger(AiFlagToolCombatPlugin::class.java)
 
-        // Maneuver target is handled specially
-        val FLAGS = ShipwideAIFlags.AIFlags.values().filter { flag -> flag != ShipwideAIFlags.AIFlags.MANEUVER_TARGET }
+        // Flags we never display
+        private val BLOCKED_FLAGS = setOf(ShipwideAIFlags.AIFlags.MANEUVER_TARGET)
+        val FLAGS = ShipwideAIFlags.AIFlags.values().filter { flag -> flag !in BLOCKED_FLAGS }
 
-        private val STATUS_KEY = Any()
-        private val KEYS = mutableMapOf<String, Any>()
     }
 
     override fun init(engine: CombatEngineAPI?) {
@@ -36,16 +38,18 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
         if (Global.getCurrentState() != GameState.COMBAT) return
         val engine = this.engine
         engine ?: return
+        if (!engine.isPaused) time += amount
 
         retroactiveLogger?.advance(amount, engine.ships.filter { ship -> ship.ai != null })
 
+        var newFocusShip = focusShip ?: engine.playerShip  // This fallback shouldn't trigger past the first run.
         if (events != null) {
             for (event in events) {
                 if (AiFlagTool.SETTINGS.displayKey.matchesEvent(event)) {
                     enabled = !enabled
                 } else if (AiFlagTool.SETTINGS.focusKey.matchesEvent(event)) {
-                    focusShip = engine.playerShip.shipTarget
-                    focusShip?.let {
+                    newFocusShip = engine.playerShip.shipTarget ?: engine.playerShip
+                    newFocusShip?.let {
                         for (message in retroactiveLogger?.getMessagesFor(it) ?: listOf()) {
                             engine.combatUI.addMessage(1, *message)
                         }
@@ -54,46 +58,39 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
                 }
             }
         }
-        if (!enabled) return
 
-        val ship = focusShip ?: engine.playerShip
-        if (ship == null || ship.ai == null) return
+        check (newFocusShip != null)
+        if (newFocusShip.ai == null) return
 
-        val flags = ship.aiFlags
+        val flags = newFocusShip.aiFlags
         val setFlags = FLAGS.filter { flag -> flags.hasFlag(flag) }
+
+        if (newFocusShip != focusShip) {
+            lastFlags = setFlags
+            flagTracker?.dispose()
+            flagTracker = FlagTracker(newFocusShip)
+            focusShip = newFocusShip
+        }
+
+        flagTracker?.update(time)
 
         val newFlags = setFlags - lastFlags
         val droppedFlags = lastFlags - setFlags
         lastFlags = setFlags
+
+        if (!enabled) return
+
         if (newFlags.isNotEmpty()) LOGGER.debug("New flags: ${newFlags.joinToString(", ")}")
         if (droppedFlags.isNotEmpty()) LOGGER.debug("Dropped flags: ${droppedFlags.joinToString(", ")}")
 
         for (flag in droppedFlags) {
-            engine.addFloatingText(ship.location, flag.toString(), 15.0f, Color.RED, ship, 0.0f, 0.0f)
+            engine.addFloatingText(newFocusShip.location, flag.toString(), 15.0f, Color.RED, newFocusShip, 0.0f, 0.0f)
         }
         for (flag in newFlags) {
-            engine.addFloatingText(ship.location, flag.toString(), 15.0f, Color.GREEN, ship, 0.0f, 0.0f)
+            engine.addFloatingText(newFocusShip.location, flag.toString(), 15.0f, Color.GREEN, newFocusShip, 0.0f, 0.0f)
         }
 
-        val (flagsWithoutData, flagsWithData) = setFlags.partition { flag -> flags.getCustom(flag) == null }
-
-        for (flag in flagsWithData) {
-            LOGGER.debug("$flag: ${flags.getCustom(flag)}")
-            val key = KEYS.getOrPut(flag.toString()) { Any() }
-            engine.maintainStatusForPlayerShip(key, "", "AI Flag", "$flag: ${flags.getCustom(flag)}", false)
-        }
-        val flagString = flagsWithoutData.joinToString(", ")
-        if (flagsWithoutData.isNotEmpty()) {
-            engine.maintainStatusForPlayerShip(
-                STATUS_KEY,
-                "",
-                "Other Flags",
-                flagString,
-                false
-            )
-        }
-
-        val shipTarget = ship.shipTarget
+        val shipTarget = newFocusShip.shipTarget
         if (shipTarget != null && shipTarget is CombatEntityAPI) {
             MagicRender.singleframe(
                 Global.getSettings().getSprite("graphics/warroom/waypoint.png"),
@@ -119,10 +116,10 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
             LOGGER.warn("MANEUVER_TARGET not a CombatEntityAPI: $maneuverTarget")
         }
 
-        if (ship.mouseTarget != null) {
+        if (newFocusShip.mouseTarget != null) {
             MagicRender.singleframe(
                 Global.getSettings().getSprite("graphics/warroom/waypoint.png"),
-                ship.mouseTarget,
+                newFocusShip.mouseTarget,
                 Vector2f(16.0f, 16.0f),
                 0.0f,
                 Color.GREEN,
