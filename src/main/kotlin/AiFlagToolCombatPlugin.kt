@@ -12,6 +12,8 @@ import java.awt.Color
 class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
     private var engine: CombatEngineAPI? = null
     private var retroactiveLogger = if (AiFlagTool.SETTINGS.enableRetroactiveLogger) RetroactiveLogger() else null
+    private var flagOverrides = mutableMapOf<Pair<ShipAPI, ShipwideAIFlags.AIFlags>, Boolean>()
+
     private var focusShip: ShipAPI? = null
     private var lastFlags: List<ShipwideAIFlags.AIFlags> = listOf()
     private var flagTracker: FlagTracker? = null
@@ -27,11 +29,13 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
         private val BLOCKED_FLAGS = setOf(ShipwideAIFlags.AIFlags.MANEUVER_TARGET)
         val FLAGS = ShipwideAIFlags.AIFlags.values().filter { flag -> flag !in BLOCKED_FLAGS }
 
+        var INSTANCE: AiFlagToolCombatPlugin? = null
     }
 
     override fun init(engine: CombatEngineAPI?) {
         if (engine == null) return
         this.engine = engine
+        INSTANCE = this
     }
 
     override fun advance(amount: Float, events: List<InputEventAPI>?) {
@@ -41,6 +45,16 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
         if (!engine.isPaused) time += amount
 
         retroactiveLogger?.advance(amount, engine.ships.filter { ship -> ship.ai != null })
+
+        for ((key, state) in flagOverrides) {
+            val (ship, flag) = key
+            if (!ship.isAlive) {
+                flagOverrides.remove(key)
+                continue
+            }
+            if (ship.ai == null) continue
+            if (state) ship.aiFlags.setFlag(flag) else ship.aiFlags.removeFlag(flag)
+        }
 
         var newFocusShip = focusShip ?: engine.playerShip  // This fallback shouldn't trigger past the first run.
         if (events != null) {
@@ -126,5 +140,25 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
                 false
             )
         }
+    }
+
+    override fun renderInUICoords(viewport: ViewportAPI?) {
+        flagTracker?.render()
+    }
+
+    fun overrideFlag(flag: ShipwideAIFlags.AIFlags, state: Boolean, persist: Boolean) {
+        val ship = focusShip ?: throw IllegalStateException()
+        engine?.combatUI?.addMessage(0, "Forcing $flag $state for ${ship.name}")
+        if (persist) {
+            flagOverrides[Pair(ship, flag)] = state
+        } else {
+            ship.aiFlags.setFlag(flag)
+        }
+    }
+
+    fun resetFlag(flag: ShipwideAIFlags.AIFlags) {
+        val ship = focusShip ?: throw IllegalStateException()
+        engine?.combatUI?.addMessage(0, "Resetting $flag for ${ship.name}")
+        flagOverrides.remove(Pair(ship, flag))
     }
 }

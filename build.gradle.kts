@@ -36,6 +36,7 @@ dependencies {
         include("*.jar")
         exclude("starfarer.api.jar")
     })
+    implementation(fileTree("$starsectorModDirectory/Console Commands/jars") { include("*.jar") })
     implementation(fileTree("$starsectorModDirectory/LazyLib/jars") { include("*.jar") })
     implementation(fileTree("$starsectorModDirectory/MagicLib/jars") { include("*.jar") })
 

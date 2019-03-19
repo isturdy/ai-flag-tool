@@ -1,0 +1,10 @@
+command,class,tags,syntax,help
+# Command: what the player enters to use your custom command
+# Class: points towards the command's script, which should implement BaseCommand
+# Tags: used by the Help command to find specific types of commands. Example tags:
+#  Console - system-level commands such as Help or Status, will work everywhere
+#  Campaign/Combat - this command only works in these contexts
+#  A mod-specific tag - include your mod as a tag so Help can differentiate them! The console mod uses the "core" tag, so please don't use that tag in your mod
+# Syntax: the syntax pattern for your command. <> denotes a required field, [] an optional one. Ex: "addcrew <amount> [optionalLevel]"
+# Help: what the player is shown when they enter "help <command>". The syntax line will be shown by help as well, so you don't need to include it again.
+OverrideFlag,com.github.isturdy.aiflagtool.commands.OverrideFlag,"combat,ai-flag-tool",overrideflag <flag> {on|off|reset} [persist],Turns on/off the specified flag on the AI Flag Tool's focus ship, or resets the flag to AI control. If 'persist' is not set the change is made only once, and may be overridden by AI; if 'persist' is set any other changes will be reverted until the flag is called.
