@@ -17,6 +17,7 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
     private var focusShip: ShipAPI? = null
     private var lastFlags: List<ShipwideAIFlags.AIFlags> = listOf()
     private var flagTracker: FlagTracker? = null
+    private var manualControl = false
 
     private var enabled = true
     private var time = 0.0f
@@ -73,13 +74,13 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
             }
         }
 
-        check (newFocusShip != null)
-        if (newFocusShip.ai == null) return
-
+        check(newFocusShip != null)
         val flags = newFocusShip.aiFlags
         val setFlags = FLAGS.filter { flag -> flags.hasFlag(flag) }
-
-        if (newFocusShip != focusShip) {
+        if (newFocusShip.ai == null) {
+            manualControl = true
+        } else if (manualControl || newFocusShip != focusShip) {
+            manualControl = false
             lastFlags = setFlags
             flagTracker?.dispose()
             flagTracker = FlagTracker(newFocusShip)
@@ -143,7 +144,7 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
     }
 
     override fun renderInUICoords(viewport: ViewportAPI?) {
-        flagTracker?.render()
+        if (!manualControl) flagTracker?.render()
     }
 
     fun overrideFlag(flag: ShipwideAIFlags.AIFlags, state: Boolean, persist: Boolean) {
