@@ -14,13 +14,13 @@ import java.io.IOException;
 
 public final class AiFlagTool extends BaseModPlugin {
     @NotNull
-    public static Logger LOGGER = Global.getLogger(AiFlagTool.class);
-    public static String MOD_ID = "ai_flag_tool";
+    public static final Logger LOGGER = Global.getLogger(AiFlagTool.class);
+    public static final String MOD_ID = "ai_flag_tool";
     @NotNull
     public static Settings SETTINGS = new Settings(new JSONObject());
     public static LazyFont FONT;
 
-    private static String SETTINGS_FILE = "ai_flag_tool_settings.json";
+    private static final String SETTINGS_FILE = "ai_flag_tool_settings.json";
 
     @Override
     public void onApplicationLoad() throws FontException, IOException, JSONException {
@@ -40,7 +40,7 @@ public final class AiFlagTool extends BaseModPlugin {
         FONT = LazyFont.loadFont("graphics/fonts/insignia15LTaa.fnt");
     }
 
-    static void setLogLevel(Level level) {
+    private static void setLogLevel(Level level) {
         AiFlagTool.LOGGER.setLevel(level);
         AiFlagToolCombatPlugin.LOGGER.setLevel(level);
         RetroactiveLogger.LOGGER.setLevel(level);
