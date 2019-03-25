@@ -93,7 +93,7 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
         val droppedFlags = lastFlags - setFlags
         lastFlags = setFlags
 
-        if (!enabled) return
+        if (!enabled || manualControl) return
 
         if (newFlags.isNotEmpty()) LOGGER.debug("New flags: ${newFlags.joinToString(", ")}")
         if (droppedFlags.isNotEmpty()) LOGGER.debug("Dropped flags: ${droppedFlags.joinToString(", ")}")
