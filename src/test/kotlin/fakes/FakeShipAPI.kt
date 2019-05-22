@@ -2,6 +2,7 @@ package com.github.isturdy.aiflagtool.fakes
 
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.*
+import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.loading.WeaponSlotAPI
 import org.lwjgl.util.vector.Vector2f
@@ -185,6 +186,10 @@ class FakeShipAPI(private val name: String) : ShipAPI {
         TODO("not implemented")
     }
 
+    override fun getFleetMember(): FleetMemberAPI {
+        TODO("not implemented")
+    }
+
     override fun getFleetMemberId(): String {
         TODO("not implemented")
     }
@@ -358,6 +363,14 @@ class FakeShipAPI(private val name: String) : ShipAPI {
     }
 
     override fun getShield(): ShieldAPI {
+        TODO("not implemented")
+    }
+
+    override fun getShieldCenterEvenIfNoShield(): Vector2f {
+        TODO("not implemented")
+    }
+
+    override fun getShieldRadiusEvenIfNoShield(): Float {
         TODO("not implemented")
     }
 
@@ -550,6 +563,10 @@ class FakeShipAPI(private val name: String) : ShipAPI {
     }
 
     override fun isLanding(): Boolean {
+        TODO("not implemented")
+    }
+
+    override fun isLiftingOff(): Boolean {
         TODO("not implemented")
     }
 
@@ -829,6 +846,10 @@ class FakeShipAPI(private val name: String) : ShipAPI {
     }
 
     override fun setStationSlot(stationSlot: WeaponSlotAPI?) {
+        TODO("not implemented")
+    }
+
+    override fun setVariantForHullmodCheckOnly(variant: ShipVariantAPI?) {
         TODO("not implemented")
     }
 
