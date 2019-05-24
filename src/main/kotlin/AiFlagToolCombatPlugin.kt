@@ -93,7 +93,7 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
         val droppedFlags = lastFlags - setFlags
         lastFlags = setFlags
 
-        if (!enabled || manualControl) return
+        if (!isDisplayed()) return
 
         if (newFlags.isNotEmpty()) LOGGER.debug("New flags: ${newFlags.joinToString(", ")}")
         if (droppedFlags.isNotEmpty()) LOGGER.debug("Dropped flags: ${droppedFlags.joinToString(", ")}")
@@ -144,7 +144,7 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
     }
 
     override fun renderInUICoords(viewport: ViewportAPI?) {
-        if (!manualControl) flagTracker?.render()
+        if (isDisplayed()) flagTracker?.render()
     }
 
     fun overrideFlag(flag: ShipwideAIFlags.AIFlags, state: Boolean, persist: Boolean) {
@@ -161,5 +161,9 @@ class AiFlagToolCombatPlugin : BaseEveryFrameCombatPlugin() {
         val ship = focusShip ?: throw IllegalStateException()
         engine?.combatUI?.addMessage(0, "Resetting $flag for ${ship.name}")
         flagOverrides.remove(Pair(ship, flag))
+    }
+
+    private fun isDisplayed(): Boolean {
+        return enabled && !manualControl && engine?.isUIShowingHUD == true
     }
 }
