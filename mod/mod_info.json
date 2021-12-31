@@ -3,9 +3,9 @@
     "name": "AI Flag Tool",
     "author": "Blothorn",
     "utility": "true",
-    "version": "0.3.2",
+    "version": "0.3.3",
     "description": "Shows information about active AI flags in the combat screen.",
-    "gameVersion": "0.9.1a",
+    "gameVersion": "0.95.1a-RC6",
     "jars":["ai-flag-tool.jar"],
     "modPlugin":"com.github.isturdy.aiflagtool.AiFlagTool"
 }

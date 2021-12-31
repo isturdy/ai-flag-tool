@@ -16,7 +16,7 @@ private const val VERTICAL_SPACING = 10.0f
 private class FlagData(private val flag: AIFlags, flags: ShipwideAIFlags, forceDisplay: Boolean) {
     private var set = flags.hasFlag(flag)
     private var lastChangedTime: Float? = null
-    private var text: LazyFont.DrawableString = AiFlagTool.FONT.createText(color = color(), maxWidth = MAX_WIDTH)
+    private var text: LazyFont.DrawableString = AiFlagTool.FONT.createText(baseColor = color(), maxWidth = MAX_WIDTH)
     private var shouldDisplay = set || forceDisplay
 
     fun update(time: Float, flags: ShipwideAIFlags) {
@@ -24,7 +24,7 @@ private class FlagData(private val flag: AIFlags, flags: ShipwideAIFlags, forceD
             shouldDisplay = true
             lastChangedTime = time
             set = !set
-            text.color = color()
+            text.baseColor = color()
         }
         if (!shouldDisplay) return
 

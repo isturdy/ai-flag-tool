@@ -2,6 +2,7 @@ package com.github.isturdy.aiflagtool.fakes
 
 import com.fs.starfarer.api.characters.PersonAPI
 import com.fs.starfarer.api.combat.*
+import com.fs.starfarer.api.combat.listeners.CombatListenerManagerAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.graphics.SpriteAPI
 import com.fs.starfarer.api.loading.WeaponSlotAPI
@@ -76,6 +77,22 @@ class FakeShipAPI(private val name: String) : ShipAPI {
 
     override fun getAI(): Any {
         TODO("not implemented")
+    }
+
+    override fun isExpired(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun setCustomData(key: String?, data: Any?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun removeCustomData(key: String?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getCustomData(): MutableMap<String, Any> {
+        TODO("Not yet implemented")
     }
 
     override fun getAIFlags(): ShipwideAIFlags {
@@ -188,6 +205,126 @@ class FakeShipAPI(private val name: String) : ShipAPI {
 
     override fun getFleetMember(): FleetMemberAPI {
         TODO("not implemented")
+    }
+
+    override fun getShieldTarget(): Vector2f {
+        TODO("Not yet implemented")
+    }
+
+    override fun setShieldTargetOverride(x: Float, y: Float) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getListenerManager(): CombatListenerManagerAPI {
+        TODO("Not yet implemented")
+    }
+
+    override fun addListener(listener: Any?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun removeListener(listener: Any?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun removeListenerOfClass(c: Class<*>?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun hasListener(listener: Any?): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun hasListenerOfClass(c: Class<*>?): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun <T : Any?> getListeners(c: Class<T>?): MutableList<T> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getParamAboutToApplyDamage(): Any {
+        TODO("Not yet implemented")
+    }
+
+    override fun setParamAboutToApplyDamage(param: Any?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getFluxBasedEnergyWeaponDamageMultiplier(): Float {
+        TODO("Not yet implemented")
+    }
+
+    override fun setName(name: String?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setHulk(isHulk: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setCaptain(captain: PersonAPI?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getShipExplosionRadius(): Float {
+        TODO("Not yet implemented")
+    }
+
+    override fun setCircularJitter(circular: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getExtraAlphaMult(): Float {
+        TODO("Not yet implemented")
+    }
+
+    override fun setAlphaMult(alphaMult: Float) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAlphaMult(): Float {
+        TODO("Not yet implemented")
+    }
+
+    override fun setAnimatedLaunch() {
+        TODO("Not yet implemented")
+    }
+
+    override fun setLaunchingShip(launchingShip: ShipAPI?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun isNonCombat(considerOrders: Boolean): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun findBestArmorInArc(facing: Float, arc: Float): Float {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAverageArmorInSlice(direction: Float, arc: Float): Float {
+        TODO("Not yet implemented")
+    }
+
+    override fun setHoldFire(holdFire: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun cloneVariant() {
+        TODO("Not yet implemented")
+    }
+
+    override fun setTimeDeployed(timeDeployed: Float) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setFluxVentTextureSheet(textureId: String?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getFluxVentTextureSheet(): String {
+        TODO("Not yet implemented")
     }
 
     override fun getFleetMemberId(): String {
@@ -438,15 +575,7 @@ class FakeShipAPI(private val name: String) : ShipAPI {
         TODO("not implemented")
     }
 
-    override fun getVentCoreTexture(): String {
-        TODO("not implemented")
-    }
-
     override fun getVentFringeColor(): Color {
-        TODO("not implemented")
-    }
-
-    override fun getVentFringeTexture(): String {
         TODO("not implemented")
     }
 
@@ -857,15 +986,7 @@ class FakeShipAPI(private val name: String) : ShipAPI {
         TODO("not implemented")
     }
 
-    override fun setVentCoreTexture(textureId: String?) {
-        TODO("not implemented")
-    }
-
     override fun setVentFringeColor(color: Color?) {
-        TODO("not implemented")
-    }
-
-    override fun setVentFringeTexture(textureId: String?) {
         TODO("not implemented")
     }
 
