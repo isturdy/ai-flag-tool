@@ -17,12 +17,12 @@ val starsectorCoreDirectory = if (System.getProperty("os.name").toLowerCase().co
 val starsectorModDirectory = "$starsectorDirectory/mods"
 
 plugins {
-    kotlin("jvm") version "1.3.11"
+    kotlin("jvm") version "1.4.21"
     java
     jacoco
 }
 
-version = "0.3.2"
+version = "0.3.3"
 
 repositories {
     maven(url = uri("$projectDir/libs"))
@@ -31,7 +31,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("starfarer:starfarer-api:1.0")
+    implementation("starfarer:starfarer-api:1.0.0")
     implementation(fileTree(starsectorCoreDirectory) {
         include("*.jar")
         exclude("starfarer.api.jar")
